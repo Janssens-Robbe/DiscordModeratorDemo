@@ -75,8 +75,36 @@ internal class MessageHandler : IMessageHandler
     {
         _logger.LogInformation("Deleting message from {Author} with id {id}", message.Author.Id, message.Id);
         await message.DeleteAsync();
-        await SendFeedbackToAuthor(message, initalResponse);
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private async Task SendFeedbackToAuthor(SocketMessage message, string? initalResponse)
     {
