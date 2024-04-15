@@ -57,6 +57,12 @@ internal class MessageHandler : IMessageHandler
         await HandleDisallowedMessage(message, completionResponse.Choices[0].Message.Content);
     }
 
+    private async Task HandleDisallowedMessage(SocketMessage message, string? initalResponse)
+    {
+        _logger.LogInformation("Deleting message from {Author} with id {id}", message.Author.Id, message.Id);
+        await message.DeleteAsync();
+    }
+
     private async Task<ChatCompletionResponse> GetChatCompletion(ChatCompletionRequest request)
     {
         using var client = _httpClientFactory.CreateClient(Constants.OpenAIHttpClientName);
@@ -67,14 +73,7 @@ internal class MessageHandler : IMessageHandler
         var result = await client.PostAsync("chat/completions", new StringContent(requestBody, Encoding.UTF8, "application/json"));
         result.EnsureSuccessStatusCode();
         var response = await result.Content.ReadAsStringAsync();
-        var completionResponse = JsonConvert.DeserializeObject<ChatCompletionResponse>(response)!;
-        return completionResponse;
-    }
-
-    private async Task HandleDisallowedMessage(SocketMessage message, string? initalResponse)
-    {
-        _logger.LogInformation("Deleting message from {Author} with id {id}", message.Author.Id, message.Id);
-        await message.DeleteAsync();
+        return JsonConvert.DeserializeObject<ChatCompletionResponse>(response)!;
     }
 
 
